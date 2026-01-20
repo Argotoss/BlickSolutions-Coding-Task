@@ -76,9 +76,13 @@
   font-weight: 600;
   font-size: 0.95rem;
   color: #0f172a;
-  background: linear-gradient(120deg, #facc15, #f97316);
+  background: #f97316;
   box-shadow: 0 12px 18px rgba(249, 115, 22, 0.25);
   cursor: pointer;
+}
+
+.add-button:hover {
+  background: #ea580c;
 }
 
 .add-button:focus-visible {
@@ -122,9 +126,17 @@
   accent-color: #f97316;
 }
 
+.item-checkbox:hover {
+  filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6));
+}
+
 .item-name {
   font-weight: 500;
   color: #0f172a;
+}
+
+.item-name:hover {
+  color: #ea580c;
 }
 
 .item-name.bought {
@@ -138,6 +150,10 @@
   color: #ef4444;
   font-weight: 600;
   cursor: pointer;
+}
+
+.ghost-button:hover {
+  color: #b91c1c;
 }
 
 .ghost-button:focus-visible {
