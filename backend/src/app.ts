@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { HttpError } from "./errors";
 import { ShoppingItemModel } from "./models/shopping-item";
+import { requireString } from "./validation";
 
 const app = express();
 
@@ -12,6 +13,16 @@ app.get("/items", async (_request, response, next) => {
   try {
     const items = await ShoppingItemModel.find().sort({ createdAt: -1 }).lean();
     response.json(items);
+  } catch (error: unknown) {
+    next(error);
+  }
+});
+
+app.post("/items", async (request, response, next) => {
+  try {
+    const name = requireString(request.body?.name, "name");
+    const item = await ShoppingItemModel.create({ name, bought: false });
+    response.status(201).json(item);
   } catch (error: unknown) {
     next(error);
   }
