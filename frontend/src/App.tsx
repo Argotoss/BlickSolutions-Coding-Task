@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createItem, fetchItems, updateItem } from "./api";
+import { createItem, deleteItem, fetchItems, updateItem } from "./api";
 import "./App.css";
 import type { ShoppingItem } from "./types";
 
@@ -81,6 +81,16 @@ function App() {
     }
   };
 
+  const handleDelete = async (id: string): Promise<void> => {
+    setErrorMessage(null);
+    try {
+      await deleteItem(id);
+      setItems((previous) => previous.filter((entry) => entry._id !== id));
+    } catch (error: unknown) {
+      setErrorMessage(error instanceof Error ? error.message : "Failed to delete item");
+    }
+  };
+
   return (
     <div className="app">
       <header className="header">
@@ -130,7 +140,11 @@ function App() {
                       {item.name}
                     </span>
                   </label>
-                  <button className="ghost-button" type="button">
+                  <button
+                    className="ghost-button"
+                    type="button"
+                    onClick={() => handleDelete(item._id)}
+                  >
                     Delete
                   </button>
                 </li>
