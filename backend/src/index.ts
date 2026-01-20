@@ -1,9 +1,11 @@
-import { app } from "./app";
-import { config } from "./config";
+import { createApp } from "./app";
+import { loadConfig } from "./config";
 import { connectDatabase } from "./database";
 
 const start = async (): Promise<void> => {
-  await connectDatabase();
+  const config = loadConfig();
+  await connectDatabase(config.mongoUri);
+  const app = createApp(config.allowedOrigins);
   app.listen(config.port, () => {
     process.stdout.write(`Server listening on port ${config.port}\n`);
   });

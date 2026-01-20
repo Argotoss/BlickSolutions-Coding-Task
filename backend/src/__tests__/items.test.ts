@@ -26,8 +26,8 @@ beforeEach(async () => {
   findByIdAndUpdateMock.mockReset();
   findByIdAndDeleteMock.mockReset();
 
-  const { app: expressApp } = await import("../app");
-  app = expressApp;
+  const { createApp } = await import("../app");
+  app = createApp();
 });
 
 describe("items API", () => {
@@ -64,6 +64,24 @@ describe("items API", () => {
 
     expect(updateResponse.status).toBe(200);
     expect(updateResponse.body).toMatchObject({ bought: true });
+  });
+
+  it("rejects empty item names", async () => {
+    const response = await request(app).post("/items").send({ name: "   " });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({ message: "name cannot be empty" });
+  });
+
+  it("returns 404 when updating a missing item", async () => {
+    findByIdAndUpdateMock.mockReturnValue({
+      lean: vi.fn().mockResolvedValue(null),
+    });
+
+    const response = await request(app).put(`/items/${objectId}`).send({ bought: true });
+
+    expect(response.status).toBe(404);
+    expect(response.body).toMatchObject({ message: "Item not found" });
   });
 
   it("deletes an item", async () => {

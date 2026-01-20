@@ -13,6 +13,8 @@ You’ll need Node 20+ and a running MongoDB instance (local or Atlas).
 
 ### Backend
 
+You can copy `backend/.env.example` to `backend/.env` or export variables directly. `ALLOWED_ORIGIN` is optional (comma-separated) if you want to restrict CORS.
+
 ```sh
 cd backend
 npm install
@@ -20,6 +22,7 @@ npm install
 # local MongoDB example
 export MONGODB_URI="mongodb://127.0.0.1:27017/blicksolutions"
 export PORT=3001
+export ALLOWED_ORIGIN="http://localhost:5173"
 
 npm run dev
 ```
