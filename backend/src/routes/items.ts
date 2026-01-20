@@ -37,7 +37,7 @@ itemsRouter.put("/:id", async (request, response, next) => {
     ).lean();
 
     if (!item) {
-      throw new HttpError(404, "Item not found");
+      throw new HttpError(404, "Item not found", "NOT_FOUND");
     }
 
     response.json(item);
@@ -54,7 +54,7 @@ itemsRouter.delete("/:id", async (request, response, next) => {
     const item = await ShoppingItemModel.findByIdAndDelete(id).lean();
 
     if (!item) {
-      throw new HttpError(404, "Item not found");
+      throw new HttpError(404, "Item not found", "NOT_FOUND");
     }
 
     response.status(204).send();

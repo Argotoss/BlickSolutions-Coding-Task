@@ -70,7 +70,7 @@ describe("items API", () => {
     const response = await request(app).post("/items").send({ name: "   " });
 
     expect(response.status).toBe(400);
-    expect(response.body).toMatchObject({ message: "name cannot be empty" });
+    expect(response.body).toMatchObject({ message: "name cannot be empty", code: "INVALID_FIELD" });
   });
 
   it("returns 404 when updating a missing item", async () => {
@@ -81,7 +81,7 @@ describe("items API", () => {
     const response = await request(app).put(`/items/${objectId}`).send({ bought: true });
 
     expect(response.status).toBe(404);
-    expect(response.body).toMatchObject({ message: "Item not found" });
+    expect(response.body).toMatchObject({ message: "Item not found", code: "NOT_FOUND" });
   });
 
   it("deletes an item", async () => {

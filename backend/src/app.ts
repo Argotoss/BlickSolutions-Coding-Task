@@ -9,9 +9,16 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => 
     return;
   }
 
-  const statusCode = error instanceof HttpError ? error.statusCode : 500;
-  const message = error instanceof HttpError ? error.message : "Internal server error";
-  response.status(statusCode).json({ message });
+  const isHttpError = error instanceof HttpError;
+
+  if (!isHttpError) {
+    console.error("Unhandled error", error);
+  }
+
+  const statusCode = isHttpError ? error.statusCode : 500;
+  const message = isHttpError ? error.message : "Internal server error";
+  const code = isHttpError ? error.code : "INTERNAL_ERROR";
+  response.status(statusCode).json({ message, code });
 };
 
 const createApp = (allowedOrigins?: string[]): express.Express => {
