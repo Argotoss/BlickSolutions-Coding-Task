@@ -1,8 +1,15 @@
 import { app } from "./app";
+import { config } from "./config";
+import { connectDatabase } from "./database";
 
-const portValue = Number(process.env.PORT ?? 3001);
-const port = Number.isNaN(portValue) ? 3001 : portValue;
+const start = async (): Promise<void> => {
+  await connectDatabase();
+  app.listen(config.port, () => {
+    process.stdout.write(`Server listening on port ${config.port}\n`);
+  });
+};
 
-app.listen(port, () => {
-  process.stdout.write(`Server listening on port ${port}\n`);
+start().catch((error: unknown) => {
+  process.stderr.write(`Failed to start server: ${String(error)}\n`);
+  process.exit(1);
 });
