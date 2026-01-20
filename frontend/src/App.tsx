@@ -21,6 +21,16 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
 
   const summaryLabel = useMemo(() => formatCountLabel(items.length), [items.length]);
+  const boughtCount = useMemo(() => items.filter((item) => item.bought).length, [items]);
+  const pendingCount = items.length - boughtCount;
+  const progressPercent = items.length === 0 ? 0 : Math.round((boughtCount / items.length) * 100);
+  const progressLabel = loading
+    ? "Fetching items"
+    : items.length === 0
+      ? "Ready when you are"
+      : `${boughtCount} of ${items.length} bought`;
+  const statusText = loading ? "Loading..." : summaryLabel;
+  const canAdd = nameInput.trim().length > 0 && !isSaving;
 
   useEffect(() => {
     let isActive = true;
@@ -94,14 +104,38 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <p className="eyebrow">Blick Shopping</p>
+        <div className="header-top">
+          <p className="eyebrow">Blick Shopping</p>
+          <span className="status-pill">{statusText}</span>
+        </div>
         <h1>Shopping List</h1>
         <p className="subtitle">
           Add products, mark them as bought, and keep your list fresh.
         </p>
-        <p className="summary">{summaryLabel}</p>
+        <div className="summary-row">
+          <div className="summary-card">
+            <span className="summary-value">{boughtCount}</span>
+            <span className="summary-label">Bought</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-value">{pendingCount}</span>
+            <span className="summary-label">To buy</span>
+          </div>
+        </div>
       </header>
       <main className="panel">
+        <div className="panel-header">
+          <div>
+            <h2>Items</h2>
+            <p className="panel-subtitle">Check items off as you shop.</p>
+          </div>
+          <div className="progress">
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
+            </div>
+            <span className="progress-label">{progressLabel}</span>
+          </div>
+        </div>
         <div className="input-row">
           <input
             aria-label="Product name"
@@ -116,15 +150,17 @@ function App() {
               }
             }}
           />
-          <button className="add-button" type="button" onClick={handleAdd} disabled={isSaving}>
+          <button className="add-button" type="button" onClick={handleAdd} disabled={!canAdd}>
             Add
           </button>
         </div>
         <div className="list">
           {loading ? (
-            <p className="list-placeholder">Loading items...</p>
+            <p className="list-placeholder">Loading your list...</p>
           ) : items.length === 0 ? (
-            <p className="list-placeholder">No items yet.</p>
+            <p className="list-placeholder">
+              No items yet. Add your first product above.
+            </p>
           ) : (
             <ul className="items">
               {items.map((item) => (
@@ -152,8 +188,15 @@ function App() {
             </ul>
           )}
         </div>
-        {errorMessage ? <p className="error">{errorMessage}</p> : null}
+        {errorMessage ? (
+          <p className="error" role="alert">
+            {errorMessage}
+          </p>
+        ) : null}
       </main>
+      <footer className="credit">
+        Daniel Kozak · Coding Task for BlickSolutions Full-Stack Developer position
+      </footer>
     </div>
   );
 }
